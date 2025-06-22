@@ -199,28 +199,7 @@ def speech_to_text(api_key,audio_file_path):
 
     return transcription.text
 
-def save_and_get_result(audio_value,llm):
-    if audio_value and audio_value.size/100000 > 4:
-        filepath = f"audio.wav"
-
-        # Save the audio data to a file
-        try:
-            with open(filepath, "wb") as file:
-                file.write(audio_value.getbuffer())
-
-            # Now you can process the audio, e.g., transcribe it
-            user_message = speech_to_text(api_key=st.session_state.api_key,audio_file_path=filepath)
-            st.session_state.chat_history_real.append(HumanMessage(content=user_message))
-
-            ai_response = continuation_question(llm, st.session_state.chat_history_real)
-            st.session_state.chat_history_real.append(AIMessage(content=ai_response))
-
-
-        except Exception as e:
-            st.error(f"Error saving audio: {e}")
-    else : 
-        # 음성파일이 없거나 너무 짧으면
-        st.warning("잘못 녹음된 것 같아요! 녹음을 들어보고 다시 녹음해주세요!")
+    
 
 def save_final_feedback(feedback, chat_history, mode):
     CONVERSATION_LOG_DIR = "conversation_logs"

@@ -74,8 +74,7 @@ audio_value = st.audio_input("Talky의 질문에 한국어 또는 영어로 편�
 if st.session_state.phase :    
     submit, quit = submit_button_set("practice")
     if submit:
-        st.session_state.phase = False
-        if audio_value and audio_value.size/100000 > 4:
+        if audio_value and audio_value.size/100000 > 2:
             filepath = f"audio.wav"
 
             # Save the audio data to a file
@@ -87,6 +86,7 @@ if st.session_state.phase :
                 st.session_state.chat_history_practice.append(HumanMessage(content=user_message))
                 ai_response = f.correct(llm, st.session_state.chat_history_practice)
                 st.session_state.chat_history_practice.append(SystemMessage(content=ai_response))
+                st.session_state.phase = False
                 st.rerun()
             except Exception as e:
                 st.error(f"Error saving audio: {e}")
@@ -111,7 +111,7 @@ else :
     if retry:
         st.session_state.chat_history_practice.pop() # 이전 답변
         st.session_state.chat_history_practice.pop() # 이전 피드백 제거
-        if audio_value and audio_value.size/100000 > 4:
+        if audio_value and audio_value.size/100000 > 2:
             filepath = f"audio.wav"
             # Save the audio data to a file
             try:

@@ -5,6 +5,7 @@ from langchain_core.messages import HumanMessage,SystemMessage,AIMessage
 import json
 import os
 from datetime import datetime
+from time import sleep
 
 st.set_page_config(
     page_title="실전모드",
@@ -65,19 +66,41 @@ audio_value = st.audio_input("Talky의 질문에 영어로만 대답해주세요
 # 버튼 배치
 record, quit = record_button_set("real")
 if record:
-    # 파일 저장
-    f.save_and_get_result(audio_value,llm)
+    if audio_value and audio_value.size/100000 > 2:
+        filepath = f"audio.wav"
+
+        # Save the audio data to a file
+        try:
+            with open(filepath, "wb") as file:
+                file.write(audio_value.getbuffer())
+
+            # Now you can process the audio, e.g., transcribe it
+            user_message = f.speech_to_text(api_key=st.session_state.api_key,audio_file_path=filepath)
+            st.session_state.chat_history_real.append(HumanMessage(content=user_message))
+
+            ai_response = f.continuation_question(llm, st.session_state.chat_history_real)
+            st.session_state.chat_history_real.append(AIMessage(content=ai_response))
+
+
+        except Exception as e:
+            st.error(f"Error saving audio: {e}")
+    else : 
+        # 음성파일이 없거나 너무 짧으면
+        st.warning("잘못 녹음된 것 같아요! 녹음을 들어보고 다시 녹음해주세요!")
 
 
 if quit:
     with st.spinner("최종 피드백을 생성 중입니다..."):
-        feedback = f.final_feedback(llm, st.session_state.chat_history_real)
+            feedback = f.final_feedback(llm, st.session_state.chat_history_practice)
         
     st.subheader("📝 최종 대화 피드백")
     st.write(feedback)
-    
-    filename = f.save_final_feedback(feedback, st.session_state.chat_history_real, "real")
+        
+    filename = f.save_final_feedback(feedback, st.session_state.chat_history_practice, "practice")
     st.success(f"대화 기록과 피드백이 저장되었습니다: {filename}")
     # 대화 기록 초기화 후 새로고침
+    st.session_state.chat_history_practice = []
+    sleep(3)
+    # 대화 기록 초기화 후 새로고침
     st.session_state.chat_history_real = []
-    st.rerun()
+    st.switch_page('app.py')
