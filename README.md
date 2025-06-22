@@ -1,5 +1,5 @@
-# ECHO
-ECHO: English Conversation Helper, Operating as Open-source
+# Talky
+Talky is a english conversation teacher AI.
 
 해당 프로젝트는 세종대학교 학술제 출품을 위해 제작하였습니다.
 
