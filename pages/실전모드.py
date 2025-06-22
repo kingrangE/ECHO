@@ -15,6 +15,11 @@ st.set_page_config(
 # 세션 상태 초기화
 if 'chat_history_real' not in st.session_state:
     st.session_state.chat_history_real = []
+if 'processing' not in st.session_state:
+    st.session_state.processing = False
+if 'audio_buffer' not in st.session_state:
+    st.session_state.audio_buffer = None
+
 # --- API 키 유효성 검사 및 리디렉션 ---
 if not st.session_state.get("api_key"):
     st.warning("API 키가 설정되지 않았습니다. 메인 페이지로 이동합니다.")
@@ -43,9 +48,9 @@ st.markdown("""
 def record_button_set(key_prefix):
     col1, col2 = st.columns(2)
     with col1:
-        record_button = st.button('녹음 결과 전송', key=f"{key_prefix}_record", use_container_width=True)
+        record_button = st.button('녹음 결과 전송', key=f"{key_prefix}_record", use_container_width=True, disabled=st.session_state.processing)
     with col2:
-        quit_button = st.button('작업끝내기', key=f"{key_prefix}_quit", use_container_width=True)
+        quit_button = st.button('작업끝내기', key=f"{key_prefix}_quit", use_container_width=True, disabled=st.session_state.processing)
 
     return record_button, quit_button
 
@@ -62,28 +67,19 @@ f.display_chat_history(st.session_state.chat_history_real)
 
 
 # 녹음 버튼이 클릭되면 채팅 기록에 메시지 추가 (예시)
-audio_value = st.audio_input("Talky의 질문에 영어로만 대답해주세요!")
+audio_value = st.audio_input(
+    "Talky의 질문에 영어로만 대답해주세요!",
+    disabled=st.session_state.processing
+)
+if audio_value:
+    st.session_state.audio_buffer = audio_value.getbuffer()
+
 # 버튼 배치
 record, quit = record_button_set("real")
 if record:
-    if audio_value and audio_value.size/100000 > 2:
-        filepath = f"audio.wav"
-
-        # Save the audio data to a file
-        try:
-            with open(filepath, "wb") as file:
-                file.write(audio_value.getbuffer())
-
-            # Now you can process the audio, e.g., transcribe it
-            user_message = f.speech_to_text(api_key=st.session_state.api_key,audio_file_path=filepath)
-            st.session_state.chat_history_real.append(HumanMessage(content=user_message))
-
-            ai_response = f.continuation_question(llm, st.session_state.chat_history_real)
-            st.session_state.chat_history_real.append(AIMessage(content=ai_response))
-
-
-        except Exception as e:
-            st.error(f"Error saving audio: {e}")
+    if st.session_state.audio_buffer and audio_value.size/100000 > 2:
+        st.session_state.processing = True
+        st.rerun()
     else : 
         # 음성파일이 없거나 너무 짧으면
         st.warning("잘못 녹음된 것 같아요! 녹음을 들어보고 다시 녹음해주세요!")
@@ -91,12 +87,12 @@ if record:
 
 if quit:
     with st.spinner("최종 피드백을 생성 중입니다..."):
-            feedback = f.final_feedback(llm, st.session_state.chat_history_practice)
+        feedback = f.final_feedback(llm, st.session_state.chat_history_practice)
         
     st.subheader("📝 최종 대화 피드백")
     st.write(feedback)
         
-    filename = f.save_final_feedback(feedback, st.session_state.chat_history_practice, "practice")
+    filename = f.save_final_feedback(feedback, st.session_state.chat_history_real, "real")
     st.success(f"대화 기록과 피드백이 저장되었습니다: {filename}")
     # 대화 기록 초기화 후 새로고침
     st.session_state.chat_history_practice = []
@@ -104,3 +100,20 @@ if quit:
     # 대화 기록 초기화 후 새로고침
     st.session_state.chat_history_real = []
     st.switch_page('app.py')
+
+if st.session_state.processing:
+    with st.spinner("답변을 전송하는 중입니다..."):
+        filepath = "audio.wav"
+        try:
+            with open(filepath, "wb") as file:
+                file.write(st.session_state.audio_buffer)
+            user_message = f.speech_to_text(api_key=st.session_state.api_key, audio_file_path=filepath)
+            st.session_state.chat_history_real.append(HumanMessage(content=user_message))
+            ai_response = f.continuation_question(llm, st.session_state.chat_history_real)
+            st.session_state.chat_history_real.append(AIMessage(content=ai_response))
+        except Exception as e:
+            st.error(f"오디오 처리 중 오류가 발생했습니다: {e}")
+        finally:
+            st.session_state.processing = False
+            st.session_state.audio_buffer = None
+            st.rerun()
