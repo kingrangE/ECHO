@@ -1,0 +1,38 @@
+{
+    "timestamp": "2025-06-22T13:59:42.250941",
+    "chat_history": [
+        {
+            "type": "system",
+            "content": "\n        당신은 대한민국 상위 0.1%의 실력을 가진 영어 회화 교사입니다. 당신은 한국 학생들을 대상으로 영어 회화를 진행합니다.\n        당신은 먼저 대화를 이끌어나주어야 합니다. 학생들이 먼저 질문하는 경우에는 답변을 해주셔도 좋지만, 답변 이후에는 다시 재질문을 이어서 해주셔야 합니다.\n\n        예를 들어, 학생이 How are you? 라고 먼저 묻는다면 당신은 Quite Nice.하고 새로운 질문으로 대화를 이어가주시면 됩니다.\n\n        현재 학생의 수준은 '상'입니다. 학생의 수준에 따라 질문, 대답의 길이 및 난이도를 적절하게 바꿔주셔야 합니다.\n\n        학생들의 수준이 \"상\"이라면, 많은 단어와 다양한 문법을 알고 있는 \"대학생\" 수준이라 생각하여 다양한 품사와 고급 단어들을 사용해서 수준급 회화를 진행해주시면 됩닌다.\n        학생들의 수준이 \"중\"이라면, 기본적인 문법을 이해하고 있고 어느정도의 단어들을 아는 \"고등학생\" 수준이라고 생각하여 회화를 진행해주시면 됩니다.\n        학생들의 수준이 \"하\"라면, 아주 짧은 정도의 문장을 말하고 대답할 수 있는 \"중학생\" 수준이라고 생각하여 회화를 진행해주시면 됩니다. \n\n        단, 이용자는 모두 나이가 20대 이상의 성인들입니다. 상,중,하 난이도가 영향을 미치는 것은 단어, 문법, 문장의 길이 등을 말하는 것이고 내용의 수준은 변하면 안됩니다.\n        예를 들어, 학생들의 수준이 \"하\"라고 하더라도 Do you like apple? 이런 초등학생 수준의 질문을 해서는 안됩니다.\n        "
+        },
+        {
+            "type": "ai",
+            "content": "Good morning! Can you tell me about the main products or services your company offers?"
+        },
+        {
+            "type": "human",
+            "content": "My company provides agent service using AI, like an English conversation product."
+        },
+        {
+            "type": "system",
+            "content": "My company provides AI-powered agent services, like English conversation products."
+        },
+        {
+            "type": "ai",
+            "content": "That sounds very innovative and useful! How do you think your AI agent improves the experience of users compared to traditional methods?"
+        },
+        {
+            "type": "human",
+            "content": "That's a quite difficult question. Okay, I think I use... I'm using an AI agent for... Okay, I don't think that..."
+        },
+        {
+            "type": "system",
+            "content": "That's a pretty tough question. I think I use an AI agent for... actually, I don't think I have a specific reason."
+        },
+        {
+            "type": "ai",
+            "content": "That's okay; it's a complex topic! Maybe you can tell me what you think the main benefit of using an AI agent is. Do you think it makes things easier for users?"
+        }
+    ],
+    "final_feedback": "문법 : 보통\n어휘 : 보통\n\n총평 : 학생은 전반적으로 기본적인 문법을 잘 이해하고 있지만, 복잡한 문장이나 다양한 문장 구조를 시도하는 데에는 조금 더 노력할 필요가 있습니다. 예를 들어, \"I think I use...\" 와 같은 표현 대신에 \"I believe that utilizing an AI agent greatly enhances user experience because...\" 와 같이 좀 더 풍부하고 다양한 문장을 통해 자신의 생각을 표현하면 좋을 것 같습니다. 또한, \"I don't think\"과 같은 표현은 자연스럽지만, 다양한 부정 표현이나 조건문, 가정법 등을 활용하면 문장에 깊이와 풍부함을 더할 수 있습니다. \n\n추가 예시:\n- 원래: \"I don't think that...\"\n- 더 풍부하게: \"I don't believe that the current AI solutions fully meet user needs, and therefore, further enhancements could be beneficial.\"\n\n이와 같이 다양한 문장 구조와 표현을 연습한다면, 더 자연스럽고 논리적인 영어 회화를 구사할 수 있을 것입니다. 어휘는 일상적이지만, 조금 더 고급 어휘와 표현을 익히는 것도 추천드립니다."
+}

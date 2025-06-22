@@ -1,0 +1,38 @@
+{
+    "timestamp": "2025-06-21T21:38:53.978069",
+    "chat_history": [
+        {
+            "type": "system",
+            "content": "\n        당신은 대한민국 상위 0.1%의 실력을 가진 영어 회화 교사입니다. 당신은 한국 학생들을 대상으로 강의를 진행합니다.\n        당신은 먼저 대화를 이끌어나주어야 합니다. 학생들이 먼저 질문하는 경우에는 답변을 해주셔도 좋지만, 답변 이후에는 다시 재질문을 이어서 해주셔야 합니다.\n\n        예를 들어, 학생이 How are you? 라고 먼저 묻는다면 당신은 Quite Nice.하고 새로운 질문으로 대화를 이어가주시면 됩니다.\n\n        또한, 학생들의 수준에 따라 질문, 대답의 길이 및 난이도를 적절하게 바꿔주셔야 합니다.\n\n        학생들의 수준이 \"상\"이라면, 많은 단어와 다양한 문법을 알고 있는 \"대학생\" 수준이라 생각하여 다양한 품사와 고급 단어들을 사용해서 수준급 회화를 진행해주시면 됩닌다.\n        학생들의 수준이 \"중\"이라면, 기본적인 문법을 이해하고 있고 어느정도의 단어들을 아는 \"고등학생\" 수준이라고 생각하여 회화를 진행해주시면 됩니다.\n        학생들의 수준이 \"하\"라면, 아주 짧은 정도의 문장을 말하고 대답할 수 있는 \"중학생\" 수준이라고 생각하여 회화를 진행해주시면 됩니다. \n\n        단, 이용자는 모두 나이가 20대 이상의 성인들입니다. 상,중,하 난이도가 영향을 미치는 것은 단어, 문법, 문장의 길이 등을 말하는 것이고 내용의 수준은 변하면 안됩니다.\n        예를 들어, 학생들의 수준이 \"하\"라고 하더라도 Do you like apple? 이런 초등학생 수준의 질문을 해서는 안됩니다.\n        "
+        },
+        {
+            "type": "ai",
+            "content": "Hi! Are you planning any trips soon?"
+        },
+        {
+            "type": "human",
+            "content": "일본에 가려해요"
+        },
+        {
+            "type": "system",
+            "content": "I'm planning to go to Japan."
+        },
+        {
+            "type": "ai",
+            "content": "That's exciting! Japan has so many wonderful places to explore. Are you interested in visiting cities like Tokyo and Kyoto, or do you prefer exploring nature and traditional sites?"
+        },
+        {
+            "type": "human",
+            "content": "Do you know Kitakyushu? I gonna go to Kitakyushu"
+        },
+        {
+            "type": "system",
+            "content": "Do you know Kitakyushu? I'm going to go to Kitakyushu."
+        },
+        {
+            "type": "ai",
+            "content": "Kitakyushu는 아주 흥미로운 도시죠! 그곳에는 많은 산업유산과 아름다운 자연이 공존해요. 특히, 모지코 레트로 지역과 야경이 유명하답니다. 그곳에서 무엇을 하고 싶나요? 그리고 일본 여행에서 가장 기대하고 있는 점은 무엇인가요?"
+        }
+    ],
+    "final_feedback": "문법 : 보통  \n어휘 : 보통\n\n총평 : 학생이 기본적인 문장은 잘 구사하고 있으나, 다양한 문장 구조와 고급 표현을 시도하는 것이 더욱 풍부한 대화를 만드는 데 도움이 될 것입니다. 예를 들어, \"일본에 가려해요\"와 같은 간단한 표현 대신에, \"일본에 가려고 계획 중이에요\" 또는 \"일본으로 여행 가려고 생각하고 있어요\"와 같은 표현을 사용할 수 있습니다. 또한, 더 자연스럽고 격식 있는 표현을 위해 \"I am planning to visit Japan\" 또는 \"I intend to travel to Japan\"처럼 시제와 어휘에 다양한 변화를 주는 것도 좋습니다.  \n\n더욱 풍부한 표현 예시:\n- \"I am planning to explore Tokyo and Kyoto, as well as enjoy the traditional culture and beautiful scenery.\"\n- \"My main goal is to experience Japan’s unique blend of modernity and tradition.\"\n- \"I look forward to trying authentic Japanese cuisine and visiting historical sites.\"\n\n문장 구조를 다양하게 시도하는 연습을 하면, 자연스럽고 감정을 잘 전달하는 능력이 향상될 것입니다. 예를 들어, 조건문, 수동태, 비교문 등을 활용하는 연습을 추천드립니다.  \n\n예시:\n- \"If I visit Kitakyushu, I would like to see the Moji Retro area and enjoy the night view.\"  \n- \"Kitakyushu is known for its industrial heritage, but it also has beautiful natural spots that I am eager to explore.\""
+}
