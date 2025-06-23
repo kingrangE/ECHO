@@ -19,6 +19,8 @@ if 'processing' not in st.session_state:
     st.session_state.processing = False
 if 'audio_buffer' not in st.session_state:
     st.session_state.audio_buffer = None
+if 'audio_to_play_b64' not in st.session_state:
+    st.session_state.audio_to_play_b64 = None
 
 # --- API 키 유효성 검사 및 리디렉션 ---
 if not st.session_state.get("api_key"):
@@ -27,6 +29,12 @@ if not st.session_state.get("api_key"):
 # 대화 기록 저장 디렉토리 설정
 CONVERSATION_LOG_DIR = "conversation_logs"
 os.makedirs(CONVERSATION_LOG_DIR, exist_ok=True) # 디렉토리가 없으면 생성
+
+# --- 오디오 자동 재생 ---
+if st.session_state.get("audio_to_play_b64"):
+    st.html(f'<audio src="data:audio/mp3;base64,{st.session_state.audio_to_play_b64}" autoplay="true"></audio>')
+    # 재생 후에는 다시 None으로 설정하여 반복 재생 방지
+    st.session_state.audio_to_play_b64 = None
 
 
 llm = ChatOpenAI(model='gpt-4.1-nano', api_key=st.session_state.api_key)
@@ -87,7 +95,7 @@ if record:
 
 if quit:
     with st.spinner("최종 피드백을 생성 중입니다..."):
-        feedback = f.final_feedback(llm, st.session_state.chat_history_practice)
+        feedback = f.final_feedback(llm, st.session_state.chat_history_real)
         
     st.subheader("📝 최종 대화 피드백")
     st.write(feedback)
@@ -116,4 +124,7 @@ if st.session_state.processing:
         finally:
             st.session_state.processing = False
             st.session_state.audio_buffer = None
+            audio_b64 = f.text_to_speech(api_key=st.session_state.api_key, text=ai_response)
+            if audio_b64:
+                st.session_state.audio_to_play_b64 = audio_b64
             st.rerun()

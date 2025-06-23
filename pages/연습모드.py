@@ -2,8 +2,6 @@ import streamlit as st
 import functions as f
 from langchain_core.messages import HumanMessage,SystemMessage,AIMessage
 from langchain_openai import ChatOpenAI
-import json
-import os
 from datetime import datetime
 from time import sleep
 
@@ -67,6 +65,7 @@ st.info("연습모드에서는 NOVA에게 한국어로 말하면 영어 표현�
 if len(st.session_state.chat_history_practice) == 0:
     st.session_state.chat_history_practice = f.practice_chat_init(st.session_state.level)
     st.session_state.chat_history_practice.append(AIMessage(f.start_question(llm, st.session_state.topic)))
+    st.session_state.chat_history_practice.append(HumanMessage(f.answer_guide(llm, st.session_state.chat_history_practice[-1].content)))
 
 f.display_chat_history(st.session_state.chat_history_practice)
 
@@ -80,6 +79,7 @@ if audio_value:
 if st.session_state.phase :    
     submit, quit = submit_button_set("practice")
     if submit:
+        st.session_state.chat_history_practice.pop() # 답변 가이드 제거
         if st.session_state.audio_buffer and audio_value.size/100000 > 2:
             st.session_state.processing = True
             st.rerun()
@@ -115,6 +115,7 @@ else :
         st.session_state.phase = True
         ai_response = f.continuation_question(llm,st.session_state.chat_history_practice)
         st.session_state.chat_history_practice.append(AIMessage(ai_response))
+        st.session_state.chat_history_practice.append(HumanMessage(f.answer_guide(llm, st.session_state.chat_history_practice[-1].content)))
         st.rerun()
 
 if st.session_state.processing:
