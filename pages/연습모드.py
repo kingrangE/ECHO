@@ -19,6 +19,8 @@ if 'processing' not in st.session_state:
     st.session_state.processing = False
 if 'audio_buffer' not in st.session_state:
     st.session_state.audio_buffer = None
+if 'phase' not in st.session_state:
+    st.session_state.phase = True
 if not st.session_state.get("api_key"):
     st.warning("API 키가 설정되지 않았습니다. 메인 페이지로 이동합니다.")
     st.switch_page("app.py")

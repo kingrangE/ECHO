@@ -103,11 +103,7 @@ if quit:
     filename = f.save_final_feedback(feedback, st.session_state.chat_history_real, "real")
     st.success(f"대화 기록과 피드백이 저장되었습니다: {filename}")
     # 대화 기록 초기화 후 새로고침
-    st.session_state.chat_history_practice = []
-    sleep(3)
-    # 대화 기록 초기화 후 새로고침
     st.session_state.chat_history_real = []
-    st.switch_page('app.py')
 
 if st.session_state.processing:
     with st.spinner("답변을 전송하는 중입니다..."):
