@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 from openai import OpenAI
 import os
+import base64
+
 
 #######################
 ### 연습 모드 관련 함수 ###
@@ -72,6 +74,16 @@ def correct(llm,chat_history):
     """
 
     result = llm.invoke(prompt)
+    return result.content
+
+def answer_guide(llm, question):
+    result = llm.invoke(f"""{question}에 대해 영어로 답변하기 위한 가이드를 간단히 200자 이내로 정리해주세요. 
+                        답변 형식은 다음과 같습니다. 
+                        
+                        답변 형식 : 
+                        이렇게 답변해보세요! 
+                        (답변을 위한 가이드)
+                        """)
     return result.content
 #######################
 ### 실전 모드 관련 함수 ###
@@ -183,9 +195,6 @@ def display_log_content(log_file_path):
         st.subheader("📝 최종 피드백")
         st.write(log_data.get("final_feedback", "저장된 피드백이 없습니다."))
 
-def record():
-    pass
-
 def speech_to_text(api_key,audio_file_path):
     
     client = OpenAI(api_key=api_key)
@@ -199,7 +208,20 @@ def speech_to_text(api_key,audio_file_path):
 
     return transcription.text
 
-    
+def text_to_speech(api_key, text):
+    """Generates speech from text and returns it as a base64 encoded string."""
+    client = OpenAI(api_key=api_key)
+    try:
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1",
+            voice="coral",
+            input=text,
+        ) as response:
+            audio_bytes = response.read()
+            return base64.b64encode(audio_bytes).decode()
+    except Exception as e:
+        st.error(f"음성(TTS) 생성 중 오류가 발생했습니다: {e}")
+        return None
 
 def save_final_feedback(feedback, chat_history, mode):
     CONVERSATION_LOG_DIR = "conversation_logs"
@@ -235,3 +257,4 @@ def display_chat_history(chat_history):
                 st.chat_message("assistant").markdown(message.content)
             else : 
                 st.info(message.content,icon="💡")
+    
