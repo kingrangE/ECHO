@@ -28,10 +28,6 @@ def show_auth_page():
                             "password": password,
                         }
                     )
-                    st.session_state.access_token = response.access_token
-                except Exception as e:
-                    st.error(f"이메일 또는 비밀번호가 일치하지 않습니다. {e}")
-                try:
                     user_id = response.user.id
                     existing_user = get_user_info(supabase,user_id)
                     # 첫 로그인이라면 users 테이블에 데이터 삽입
@@ -46,7 +42,7 @@ def show_auth_page():
                     st.session_state.logged_in =True
                     st.session_state.api_key = existing_user.data[0]["api_key"]
                     st.session_state.user_id = user_id
-                    st.rerun()
+                    st.rerun()                    
                 except Exception as e:
                     st.error(f"Error {e}")
                 
