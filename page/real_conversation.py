@@ -7,11 +7,6 @@ import os
 from datetime import datetime
 from time import sleep
 
-st.set_page_config(
-    page_title="실전모드",
-    page_icon="🔥",
-)
-
 # 세션 상태 초기화
 if 'chat_history_real' not in st.session_state:
     st.session_state.chat_history_real = []

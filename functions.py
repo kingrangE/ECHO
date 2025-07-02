@@ -7,6 +7,7 @@ import os
 import base64
 
 
+
 #######################
 ### 연습 모드 관련 함수 ###
 #######################
@@ -77,12 +78,14 @@ def correct(llm,chat_history):
     return result.content
 
 def answer_guide(llm, question):
-    result = llm.invoke(f"""{question}에 대해 영어로 답변하기 위한 가이드를 간단히 200자 이내로 정리해주세요. 
+    result = llm.invoke(f"""{question}에 대해 영어로 답변하기 위한 가이드를 간단히 200자 이내로 정리해주시고, 영어 문장 예시를 1,2가지 알려주세요.
                         답변 형식은 다음과 같습니다. 
                         
                         답변 형식 : 
-                        이렇게 답변해보세요! 
-                        (답변을 위한 가이드)
+                        이렇게 답변해보세요! \n
+                        (답변을 위한 가이드) \n
+                        (예시 문장 1)\n
+                        (예시 문장 2)
                         """)
     return result.content
 #######################
@@ -95,22 +98,46 @@ def real_chat_init(level):
 ### 공통 함수 ###
 ###############
 def start_question(llm, topic):
-    result = llm.invoke(f"당신은 지금 영어 회화 RolePlaying을 하고 있습니다. '{topic}' 주제를 바탕으로 첫 영어 대화를 시작해주세요. 다른 말은 하지말고 바로 질문을 통해 대화를 시작해주세요.")
+    result = llm.invoke(f"""당신은 지금 영어 회화 RolePlaying을 하고 있습니다. 
+                        상대방의 수준은 {st.session_state.level}입니다. 
+                        해당 수준은 1이라면 짧은 1-2문장 대화 가능, 2라면 문단 단위 대화 가능, 3이라면 FreeTalking 대화 가능입니다.
+                        '{topic}' 주제를 바탕으로 첫 영어 대화를 시작해주세요. 
+                        다른 말은 하지말고 바로 질문을 통해 대화를 시작해주세요.""")
     return result.content
 
 def continuation_question(llm,chat_history):
+    revised_chat_history = []
+    for i,message in enumerate(chat_history):
+        if i == 0 : 
+            revised_chat_history.append(f"참고하세요 : {message.content}")
+        if isinstance(message,HumanMessage):
+            revised_chat_history.append(f"답변 : {message.content}")
+        elif isinstance(message,AIMessage):
+            revised_chat_history.append(f"질문 : {message.content}")
+        else : 
+            pass
     prompt = f"""
     지금까지 학생과 대화한 내용을 기반으로 영어 대화를 이어나가 주세요. 
     학생이 바로 이전에 답변한 내용이 이해가 잘 안가더라도 최대한 의도를 물어보면서 영어로 대화를 이어나가주세요.
 
-    대화 내용 : {chat_history}
+    대화 내용 : {revised_chat_history}
     """
     result = llm.invoke(prompt)
     return result.content
 
 def final_feedback(llm,chat_history):
+    revised_chat_history = []
+    for i,message in enumerate(chat_history):
+        if i == 0 : 
+            continue # Remove System Prompt 
+        if isinstance(message,HumanMessage):
+            revised_chat_history.append(f"답변 : {message.content}")
+        elif isinstance(message,AIMessage):
+            revised_chat_history.append(f"질문 : {message.content}")
+        else : 
+            pass
     prompt ="""
-            Your task is to provide a comprehensive evaluation of the student's English based on the conversation script provided below.
+            Your task is to provide a comprehensive evaluation of the student's English based on the QA conversation script provided below.
 
             Your response MUST be structured using Markdown and follow this exact format. Do not add any conversational text outside of this structure.
             ---
@@ -127,7 +154,7 @@ def final_feedback(llm,chat_history):
 
             #### **Grammar (문법)**
             - **Strengths:** Point out 1-2 specific examples of correct grammar usage (e.g., "Excellent use of the present perfect tense in the sentence '...'").
-            - **Areas for Improvement:** List up to 3 specific grammatical errors. For each error, show the original sentence and the corrected version. Briefly explain the mistake.
+            - **Areas for Improvement:** List up specific grammatical errors. For each error, show the original sentence and the corrected version. Briefly explain the mistake.
             - **Error 1:**
                 - **Original:** "[Student's sentence with an error]"
                 - **Correction:** "[Corrected sentence]"
@@ -139,7 +166,7 @@ def final_feedback(llm,chat_history):
             - *Example: The word "good" was used frequently. You could also try: "excellent," "fantastic," or "beneficial."*
 
             #### **Expression Suggestions (표현 제안)**
-            Create a table to suggest more natural or sophisticated ways to phrase things the student said. Provide at least 3 examples.
+            Create a table to suggest more natural or sophisticated ways to phrase things the student reply. Provide at least 3 examples.
 
             | Student's Original Phrase | Suggested Improvement | Why it's better |
             | :--- | :--- | :--- |
@@ -161,15 +188,8 @@ def translator(llm,query):
     result = llm.invoke('다음 문장을 한국어로 번역해주세요.'+query)
     return result.content
 
-def display_log_content(log_file_path):
+def display_log_content(log_data):
     """지정된 로그 파일의 내용을 읽어 Streamlit Expander에 표시합니다."""
-    try:
-        with open(log_file_path, "r", encoding="utf-8") as f:
-            log_data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        st.error(f"로그 파일을 읽는 중 오류가 발생했습니다: {e}")
-        return
-
     # 파일명에서 날짜와 시간 정보 추출
     try:
         timestamp_str = log_data.get("timestamp")
@@ -223,27 +243,6 @@ def text_to_speech(api_key, text):
         st.error(f"음성(TTS) 생성 중 오류가 발생했습니다: {e}")
         return None
 
-def save_final_feedback(feedback, chat_history, mode):
-    CONVERSATION_LOG_DIR = "conversation_logs"
-    os.makedirs(CONVERSATION_LOG_DIR, exist_ok=True) # 디렉토리가 없으면 생성
-    # 대화 기록 및 피드백 저장
-    serializable_chat_history = []
-    for msg in chat_history:
-        if isinstance(msg, (HumanMessage, AIMessage, SystemMessage)):
-            serializable_chat_history.append({"type": msg.type, "content": msg.content})
-        else: # 기타 메시지 (예: st.info로 표시되는 SystemMessage)
-            serializable_chat_history.append({"type": "info", "content": str(msg)})
-
-    conversation_data = {
-        "timestamp": datetime.now().isoformat(),
-        "chat_history": serializable_chat_history,
-        "final_feedback": feedback
-    }
-    filename = os.path.join(CONVERSATION_LOG_DIR, f"{mode}_conversation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(conversation_data, f, ensure_ascii=False, indent=4)
-    return filename
-
 def display_chat_history(chat_history):
     # 채팅 컨테이너
     chat_container = st.container(height=800, border=True)
@@ -256,5 +255,6 @@ def display_chat_history(chat_history):
             elif isinstance(message,AIMessage):
                 st.chat_message("assistant").markdown(message.content)
             else : 
-                st.info(message.content,icon="💡")
+                with st.expander("AI Feedback", expanded=False):
+                    st.info(message.content,icon="💡")
     
