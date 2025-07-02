@@ -54,8 +54,8 @@ def show_practice_page():
 
         return retry_button, continue_button
 
-    st.title("NOVA - 연습 모드")
-    st.info("연습모드에서는 NOVA에게 한국어로 말하면 영어 표현을 안내해주고 " \
+    st.title("Talky - 연습 모드")
+    st.info("연습모드에서는 Talky에게 한국어로 말하면 영어 표현을 안내해주고 " \
             "만약 잘못된 영어로 말해도 의도에 맞게 수정하여 답변해줘요.")
 
     # 채팅 기록 표시
